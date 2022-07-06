@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/test.github.io/react-my-app/static/css/main.073c9b0a.css",
-    "main.js": "/test.github.io/react-my-app/static/js/main.d84dbae6.js",
-    "static/js/787.14dc259f.chunk.js": "/test.github.io/react-my-app/static/js/787.14dc259f.chunk.js",
-    "static/media/logo.svg": "/test.github.io/react-my-app/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-    "index.html": "/test.github.io/react-my-app/index.html",
-    "main.073c9b0a.css.map": "/test.github.io/react-my-app/static/css/main.073c9b0a.css.map",
-    "main.d84dbae6.js.map": "/test.github.io/react-my-app/static/js/main.d84dbae6.js.map",
-    "787.14dc259f.chunk.js.map": "/test.github.io/react-my-app/static/js/787.14dc259f.chunk.js.map"
+    "main.css": "/test.github.io/static/css/main.073c9b0a.css",
+    "main.js": "/test.github.io/static/js/main.1c42cd3c.js",
+    "static/js/787.14dc259f.chunk.js": "/test.github.io/static/js/787.14dc259f.chunk.js",
+    "static/media/logo.svg": "/test.github.io/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/test.github.io/index.html",
+    "main.073c9b0a.css.map": "/test.github.io/static/css/main.073c9b0a.css.map",
+    "main.1c42cd3c.js.map": "/test.github.io/static/js/main.1c42cd3c.js.map",
+    "787.14dc259f.chunk.js.map": "/test.github.io/static/js/787.14dc259f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.d84dbae6.js"
+    "static/js/main.1c42cd3c.js"
   ]
 }
