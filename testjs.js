@@ -34,19 +34,18 @@ const not = b => !b;
 const mod = (x, m) => (x % m + m) % m;
 const range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
 const zeros = n => [...Array(n)].map(e => 0);
-const vFunc = (a, b, f) => (console.assert(a.length == b.length), a.map((_, i) => f(a[i], b[i])));
-const vAdd = (a, b) => vFunc(a, b, (a, b) => a + b);
-Array.prototype.vAdd = function (b) {
-	if (b.isTheType(Number)) { return a.map(e => e + b); }
-	if (b.isTheType(Array)) { return vFunc(this, b, (a, b) => a + b); }
+const vFunc = (a, b, f) => {
+	console.assert(a.isTheType(Array));
+	if (b.isTheType(Number)) { return a.map(e => f(e, b)); }
+	if (b.isTheType(Array)) {
+		console.assert(a.length == b.length);
+		return a.map((_, i) => f(a[i], b[i]));
+	}
 };
-Array.prototype.vMult = function (b) { return vFunc(a, b, (a, b) => a * b); };
-Array.prototype.mod = function (b) { return vFunc(a, b, (a, b) => mod(a, b)); };
-console.log(vAdd([1, 2, 3], [9, 8, 7]));
-console.log([1, 2, 3].vAdd([9, 8, 7]));
-const vSum = (...arrs) => {
+
+const v_sum = (...arrs) => {
 	let s = zeros(arrs[0].length);
-	arrs.forEach(arr => s = vAdd(s, arr));
+	arrs.forEach(arr => s = s.v_add(arr));
 	return s;
 };
 
@@ -67,6 +66,12 @@ Array.prototype.ringShift = function (b) {
 	const l = this.length, bm = mod(b, l);
 	return this.concat(this).slice(l - bm, 2 * l - bm);
 };
+Array.prototype.v_add = function (b) { return vFunc(this, b, (a, b) => a + b); };
+Array.prototype.v_sub = function (b) { return vFunc(this, b, (a, b) => a - b); };
+Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); };
+Array.prototype.v_div = function (b) { return vFunc(this, b, (a, b) => a / b); };
+Array.prototype.v_mod = function (b) { return vFunc(this, b, (a, b) => mod(a, b)); };
+Array.prototype.v_get = function (b) { return b.map(e => this[e]); };
 
 
 const Key_quality = {
@@ -111,16 +116,16 @@ const Alt5 = {
 const get_BS = (key, key_quality, degree, indexes = Chord_index.none, alt5 = 0) => {
 	assert(degree);
 	const d = degree;
-	const s = key_quality.map(e => mod(e + key, 12));
+	const s = key_quality.v_add(key).v_mod(12);
 	s[4] += alt5;
 
 	const code_tone = genArr(3, i => 2 * i + 1).remove(indexes.rmv).concat(indexes.add);
-	const c = genArr(code_tone.length, i => s[mod(d + code_tone[i] - 2, 7)]);
+	const c = s.v_get(code_tone.v_add(d - 2).v_mod(7));
 	const leveld = s.onehot(12);
 	const levelc = c.onehot(12);
 	const levelb = [c[0], c[2]].onehot(12);
 	const levela = [c[0]].onehot(12);
-	return vSum(leveld, levelc, levelb, levela);
+	return v_sum(leveld, levelc, levelb, levela);
 };
 
 /**
