@@ -23,11 +23,27 @@ const answer = document.getElementById("answer").innerHTML;
 
 
 const assert = b => console.assert(b);
+const typeOf = o => {
+	const str = Object.prototype.toString(o);
+	if (str != "[object Object]") { return str; }
+	return o.constructor;
+};
+Object.prototype.isTheType = function (typeName) { return typeOf(this) == typeOf(typeName()); };
+
 const not = b => !b;
 const mod = (x, m) => (x % m + m) % m;
 const range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
 const zeros = n => [...Array(n)].map(e => 0);
-const vAdd = (a, b) => (assert(a.length == b.length), a.map((_, i) => a[i] + b[i]));
+const vFunc = (a, b, f) => (console.assert(a.length == b.length), a.map((_, i) => f(a[i], b[i])));
+const vAdd = (a, b) => vFunc(a, b, (a, b) => a + b);
+Array.prototype.vAdd = function (b) {
+	if (b.isTheType(Number)) { return a.map(e => e + b); }
+	if (b.isTheType(Array)) { return vFunc(this, b, (a, b) => a + b); }
+};
+Array.prototype.vMult = function (b) { return vFunc(a, b, (a, b) => a * b); };
+Array.prototype.mod = function (b) { return vFunc(a, b, (a, b) => mod(a, b)); };
+console.log(vAdd([1, 2, 3], [9, 8, 7]));
+console.log([1, 2, 3].vAdd([9, 8, 7]));
 const vSum = (...arrs) => {
 	let s = zeros(arrs[0].length);
 	arrs.forEach(arr => s = vAdd(s, arr));
