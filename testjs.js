@@ -31,7 +31,6 @@ const typeOf = o => {
 Object.prototype.isTheType = function (typeName) { return typeOf(this) == typeOf(typeName()); };
 
 const not = b => !b;
-const mod = (x, m) => (x % m + m) % m;
 const range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
 const zeros = n => [...Array(n)].map(e => 0);
 const vFunc = (a, b, f) => {
@@ -58,21 +57,21 @@ const v_sum = (...arrs) => {
  */
 const genArr = (n, f) => [...Array(n)].map((_, i) => f(i));
 
+Number.prototype.mod = function (m) { return (this % m + m) % m; };
 Boolean.prototype.toNumber = function () { return this ? 1 : 0; };
-Array.prototype.onehot = function (n = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => (this.includes(i)).toNumber()); };
-Array.prototype.onehotInMod = function (m = 1) { return this.map(e => mod(e, m)).onehot(m); };
+Array.prototype.onehot = function (n = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
+Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
 Array.prototype.remove = function (rmv) { return this.filter(e => not(rmv.includes(e))); };
 Array.prototype.ringShift = function (b) {
-	const l = this.length, bm = mod(b, l);
+	const l = this.length, bm = b.mod(l);
 	return this.concat(this).slice(l - bm, 2 * l - bm);
 };
 Array.prototype.v_add = function (b) { return vFunc(this, b, (a, b) => a + b); };
 Array.prototype.v_sub = function (b) { return vFunc(this, b, (a, b) => a - b); };
 Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); };
 Array.prototype.v_div = function (b) { return vFunc(this, b, (a, b) => a / b); };
-Array.prototype.v_mod = function (b) { return vFunc(this, b, (a, b) => mod(a, b)); };
+Array.prototype.v_mod = function (b) { return vFunc(this, b, (a, b) => a.mod(b)); };
 Array.prototype.v_get = function (b) { return b.map(e => this[e]); };
-
 
 const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
@@ -134,7 +133,7 @@ const get_BS = (key, key_quality, degree, indexes = Chord_index.none, alt5 = 0) 
  * @param dst: pitch class of destination region's tonic 
  * @return difference between src and dst in chromatic circle of fifth
  */
-const region_dist = (src, dst) => mod((dst - src) * 7, 12);
+const region_dist = (src, dst) => ((dst - src) * 7).mod(12);
 
 /**
  * @brief distance of root in chord distance function
@@ -142,7 +141,7 @@ const region_dist = (src, dst) => mod((dst - src) * 7, 12);
  * @param dst: pitch class of destination chord's root 
  * @return difference between src and dst in diatonic circle of fifth
  */
-const root_dist = (src, dst) => mod((dst - src) * 3, 7);
+const root_dist = (src, dst) => ((dst - src) * 3).mod(7);
 
 /**
  * @brief distance of BS in chord distance function
@@ -152,7 +151,7 @@ const root_dist = (src, dst) => mod((dst - src) * 3, 7);
  */
 const BS_dist = (src, dst) => {
 	let sum = 0;
-	dst.forEach((_, i) => sum += ((dst[i] > src[i]) ? (dst[i] - src[i]) : 0));
+	dst.v_sub(src).map(e => sum += Math.max(0, e));
 	return sum;
 };
 
@@ -165,3 +164,34 @@ console.log(BS_dist(Cmaj, Gmaj));
 console.log(BS_dist(Gmaj, Cmaj));
 console.log(BS_dist(Cmaj, G7));
 console.log(BS_dist(G7, Cmaj));
+
+
+const chord = {
+	get _getter_m7(){
+		return {get: function (){
+			return {root: this.root, tones: [0,3,7,10].v_add(this.root)}
+		}}
+	},
+	get _getter_seventh(){
+		return {get: function (){
+			return {root: this.root, tones: [0,4,7,10].v_add(this.root)}
+		}}
+	},
+	get C(){
+		const res = {
+			root:0,
+			m:{root: 0, tones: [0,3,7]},
+			m7:{root: 0, tones: [0,3,7,10]},
+		}
+		Object.defineProperty(res, "seventh", this._getter_seventh)
+		return res
+	}
+}
+//chord.C.seventh = {root: 0, tones: [0,4,7,10]}
+//Object.defineProperty(chord.C, "seventh", {get: function(){return {root: 0, tones: [0,4,7,10]}}})
+console.log(chord)
+console.log(chord.C)
+console.log(chord.C.m)
+
+console.log(chord.C.seventh)
+
