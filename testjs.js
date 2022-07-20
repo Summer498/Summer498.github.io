@@ -31,8 +31,8 @@ const typeOf = o => {
 Object.prototype.isTheType = function (typeName) { return typeOf(this) == typeOf(typeName()); };
 
 const not = b => !b;
-const range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
-const zeros = n => [...Array(n)].map(e => 0);
+const Range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
+const Zeros = n => [...Array(n)].map(e => 0);
 const vFunc = (a, b, f) => {
 	console.assert(a.isTheType(Array));
 	if (b.isTheType(Number)) { return a.map(e => f(e, b)); }
@@ -43,7 +43,7 @@ const vFunc = (a, b, f) => {
 };
 
 const v_sum = (...arrs) => {
-	let s = zeros(arrs[0].length);
+	let s = Zeros(arrs[0].length);
 	arrs.forEach(arr => s = s.v_add(arr));
 	return s;
 };
@@ -66,6 +66,7 @@ Array.prototype.ringShift = function (b) {
 	const l = this.length, bm = b.mod(l);
 	return this.concat(this).slice(l - bm, 2 * l - bm);
 };
+Array.prototype.change = function (i, v) { return this[i] = v, this; };
 Array.prototype.v_add = function (b) { return vFunc(this, b, (a, b) => a + b); };
 Array.prototype.v_sub = function (b) { return vFunc(this, b, (a, b) => a - b); };
 Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); };
@@ -165,33 +166,55 @@ console.log(BS_dist(Gmaj, Cmaj));
 console.log(BS_dist(Cmaj, G7));
 console.log(BS_dist(G7, Cmaj));
 
-
-const chord = {
-	get _getter_m7(){
-		return {get: function (){
-			return {root: this.root, tones: [0,3,7,10].v_add(this.root)}
-		}}
-	},
-	get _getter_seventh(){
-		return {get: function (){
-			return {root: this.root, tones: [0,4,7,10].v_add(this.root)}
-		}}
-	},
-	get C(){
-		const res = {
-			root:0,
-			m:{root: 0, tones: [0,3,7]},
-			m7:{root: 0, tones: [0,3,7,10]},
-		}
-		Object.defineProperty(res, "seventh", this._getter_seventh)
-		return res
+class _ThirteenthChord {
+	constructor(root, degrees, tones) {
+		this.root = root;
+		this.degrees = degrees;
+		this.tones = tones;
 	}
 }
-//chord.C.seventh = {root: 0, tones: [0,4,7,10]}
-//Object.defineProperty(chord.C, "seventh", {get: function(){return {root: 0, tones: [0,4,7,10]}}})
-console.log(chord)
-console.log(chord.C)
-console.log(chord.C.m)
 
-console.log(chord.C.seventh)
+class _EleventhChord extends _ThirteenthChord {
+	constructor(root, degrees, tones) { super(root, degrees, tones); }
+	get flat13() { return this.tones.change(6, 8); }
+	get thirteenth() { return (new _ThirteenthChord(this.root, this.degrees, this.tones)).change(6, 9); }
+	add(...tensions) {
+		const numbers = tensions.filter(e => e.isTheType(Number));
+		const degrees = numbers.map(e => Math.ceil((e < 7 ? e : e + 1) / 2));
+//		return this.tones[numbers[i]] = degrees[i].v_mult(7).mod(12);
+	}
+}
 
+class _NinthChord extends _EleventhChord {
+	constructor(root, degrees, tones) { super(root, degrees, tones); }
+	get eleventh() { return (new _EleventhChord()).change(5, 5); }
+	get sharp11() { return (new _EleventhChord()).change(5, 6); }
+}
+
+class _AlteredSeventhChord extends _NinthChord {
+	constructor(root, degrees, tones) { super(root, degrees, tones); }
+	get flat9() { return (new _NinthChord()).change(4, 1); }
+	get ninth() { return (new _NinthChord()).change(4, 2); }
+}
+
+class _SeventhChord extends _AlteredSeventhChord {
+	constructor(root, degrees, tones) { super(root, degrees, tones); }
+	get flat5() { return (new _AlteredSeventhChord()).change(2, 6); }
+	get sharp5() { return (new _AlteredSeventhChord()).change(2, 8); }
+}
+
+class _TiradChord extends _SeventhChord {
+	constructor(root, degrees, tones) { super(root, degrees, tones); }
+	get seventh() { return (new _SeventhChord()).change(3, 10); }
+	get M() { return (new _SeventhChord()).change(3, 11); }
+	get M7() { return (new _SeventhChord()).change(3, 11); }
+}
+
+class Chord {
+	constructor() {
+		this.root = 0;
+		this.code_tone = [0, 4, 7, 10, 2, 5, 9];
+	}
+	get m() { return (new _TiradChord()).change(1, 3); }
+
+}
