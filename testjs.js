@@ -166,11 +166,16 @@ console.log(BS_dist(Gmaj, Cmaj));
 console.log(BS_dist(Cmaj, G7));
 console.log(BS_dist(G7, Cmaj));
 
+
+/*
 class _ThirteenthChord {
 	constructor(root, degrees, tones) {
 		this.root = root;
 		this.degrees = degrees;
 		this.tones = tones;
+	}
+	change(i, v) {
+		this.degrees.change(i, v);
 	}
 }
 
@@ -181,7 +186,7 @@ class _EleventhChord extends _ThirteenthChord {
 	add(...tensions) {
 		const numbers = tensions.filter(e => e.isTheType(Number));
 		const degrees = numbers.map(e => Math.ceil((e < 7 ? e : e + 1) / 2));
-//		return this.tones[numbers[i]] = degrees[i].v_mult(7).mod(12);
+		//		return this.tones[numbers[i]] = degrees[i].v_mult(7).mod(12);
 	}
 }
 
@@ -210,11 +215,11 @@ class _TiradChord extends _SeventhChord {
 	get M7() { return (new _SeventhChord()).change(3, 11); }
 }
 
-class Chord {
-	constructor() {
-		this.root = 0;
-		this.code_tone = [0, 4, 7, 10, 2, 5, 9];
-	}
-	get m() { return (new _TiradChord()).change(1, 3); }
-
+class Chord extends _TiradChord {
+	constructor(root) { super(root, [1, 3, 5], [root + 0, root + 4, root + 7]); }
+	get m() { return (new _TiradChord(this.root, this.degrees, this.tones)).change(1, 3); }
 }
+
+const Cchord = (new Chord(0,)).m.seventh;
+console.log(Cchord);
+*/
