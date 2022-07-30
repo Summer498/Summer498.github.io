@@ -49,18 +49,19 @@ Element.prototype.append = function (elements){
 }
 //*
 const DIV = () => document.createElement("div");
-const HTML = {};
-HTML.div = () => document.createElement("div");
+import * as HTML from "./HTML.js"
+// const HTML = {};
+// HTML.div = () => document.createElement("div");
 
 
 answer.appendChild(
-	HTML.div().set({ class: "people", id: "Fantastic Party" }).setText("Fantastic Party です").append([
-		HTML.div().set({ class: "person", id: "Adam" }).setText("Adam です"),
-		HTML.div().set({ class: "person", id: "Ben" }).setText("Ben です").append(
-			HTML.div().set({ class: "bag", id: "gorgeous bag" }).setText("Ben の豪華なバッグ です"),
+	HTML.div({ class: "people", id: "Fantastic Party" }, "Fantastic Party です").append([
+		HTML.div({ class: "person", id: "Adam" }, "Adam です"),
+		HTML.div({ class: "person", id: "Ben" }, "Ben です").append(
+			HTML.div({ class: "bag", id: "gorgeous bag" }, "Ben の豪華なバッグ です"),
 		),
-		HTML.div().set({ class: "person", id: "Charlie" }).setText("Charlie です"),
-		HTML.div().set({ class: "person", id: "David" }).setText("David です"),
+		HTML.div({ class: "person", id: "Charlie" }, "Charlie です"),
+		HTML.div({ class: "person", id: "David" }, "David です"),
 	])
 );
 //*/
