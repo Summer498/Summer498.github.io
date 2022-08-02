@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Summer498/test.github.io#readme",
   "dependencies": {
-    "@tonaljs/tonal": "^4.6.5"
+    "@tonaljs/tonal": "^4.6.5",
+    "songle-api": "^1.2.2"
   }
 }
