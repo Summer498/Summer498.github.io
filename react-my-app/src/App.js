@@ -1,5 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
+// import Songle from 'songle-api'
+//import {Songle} from 'songle-api'
+
+// ES6
+// import { Note, Key } from "@tonaljs/tonal";
+// node
+const { Note, Key } = require("@tonaljs/tonal");
+console.log(Note.transpose("A4", "5P"));
+console.log(Key.majorKey("Gb"));
+
+const Songle = require("songle-api");
+console.log(Songle);
+const player =
+  new Songle.SyncPlayer({
+    accessToken: "YOUR-ACCESS-TOKEN-HERE", // please edit your access token
+  });
+console.log(player);
 
 function App() {
   return (
