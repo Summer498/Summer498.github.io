@@ -1,4 +1,4 @@
-import { Arraying } from "stdlib.js";
+import { Arraying } from "./stdlib.js";
 Element.prototype.set = function (attributes) {
     for (const key in attributes) {
         this.setAttribute(key, attributes[key]);

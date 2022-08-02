@@ -25,7 +25,10 @@ answer === null || answer === void 0 ? void 0 : answer.appendChild(HTML.div({ cl
 ]));
 //*/
 class HogeClass {
-    constructor(txt) { this.piyoVal = new PiyoClass("piyo"); this._hogeVal = txt; }
+    constructor(txt) {
+        this.piyoVal = new PiyoClass("piyo");
+        this._hogeVal = txt;
+    }
     get hogeVal() { return this._hogeVal; }
     set hogeVal(txt) { this._hogeVal = txt; }
     _hogeFunc(txt) { return txt + "\n"; }
@@ -39,30 +42,11 @@ class PiyoClass {
     hogeFunc(txt) { console.log(this._hogeFunc(txt)); }
 }
 const constructedHoge = new HogeClass("hogehoge hugahuga piyopiyo");
-const fullscratchedHoge = {};
-fullscratchedHoge.piyoVal = (()=>{
-    const piyo = {}
-    piyo._hogeVal = "piyo"
-    Object.defineProperty(piyo, "_hogeFunc", {value: function (txt){return txt+"\n"}, writable: false})
-    Object.defineProperty(piyo, "hogeFunc", {value: function (txt){ console.log(this._hogeFunc(txt)); }, writable:false})
-//    piyo._hogeFunc = function _hogeFunc(txt){return txt+"\n"}
-//    piyo.hogeFunc = function hogeFunc(txt){ console.log(this._hogeFunc(txt)); }
-    return piyo
-})();
+const fullscratchedHoge = { piyoVal: new PiyoClass("") };
+fullscratchedHoge.piyoVal = new PiyoClass("piyo");
 console.log("constructedHoge:", constructedHoge);
 console.log("fullscratchedHoge:", fullscratchedHoge);
-
-function hogehogeFunction(e) {
-    return hogehogeFunction = function(e){return "コンニチハ"}
-}
-console.log(hogehogeFunction)
-console.log(hogehogeFunction(0))
-console.log(hogehogeFunction)
-console.log(hogehogeFunction(0))
-console.log(hogehogeFunction)
-console.log(hogehogeFunction(0))
-
 /*
 console.log("constructedHoge==fullscratchedHoge:", constructedHoge == fullscratchedHoge)
 console.log("constructedHoge===fullscratchedHoge:", constructedHoge === fullscratchedHoge)
-*/
+*/ 

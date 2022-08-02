@@ -1,4 +1,4 @@
-import { Arraying } from "stdlib.js"
+import { Arraying } from "./stdlib.js"
 
 type attribute = { [key: string]: string }
 
